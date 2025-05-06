@@ -5,5 +5,7 @@ UniViewer is an iOS Application for students at the University of Technology Syd
 
 ## Authors
 24799379 Rayan El Taher
+
 24567036 Ilias Vasiliou
+
 14475014 Justin
