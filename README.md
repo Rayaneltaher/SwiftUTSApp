@@ -3,6 +3,8 @@
 ## Purpose
 UTS UniViewer is an iOS Application for students at the University of Technology Sydney which allows students to view and leave reviews for subjects that they are taking in the current semester.
 
+We pull subject data from the following [publicAPI](https://cis-admin-api.uts.edu.au/subject-outlines/index.cfm/)
+
 ## Authors
 24799379 Rayan El Taher
 
