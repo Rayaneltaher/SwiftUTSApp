@@ -6,12 +6,28 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct subjectReviewAppApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+  @State private var currentScreen: AppScreen = .welcome
+
+  init() {
+    FirebaseApp.configure()
+  }
+
+  var body: some Scene {
+    WindowGroup {
+      switch currentScreen {
+      case .welcome:
+        WelcomeScreen(currentScreen: $currentScreen)
+      case .login:
+        LoginScreen(currentScreen: $currentScreen)
+      case .register:
+        RegisterScreen(currentScreen: $currentScreen)
+      case .home:
+        ContentView(currentScreen: $currentScreen)
+      }
     }
+  }
 }

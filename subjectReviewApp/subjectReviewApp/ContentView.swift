@@ -8,17 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+  @Binding var currentScreen: AppScreen
+
+  var body: some View {
+      TabView {
+          SubjectsScreen()
+              .tabItem {
+                  Label("Subjects", systemImage: "book.closed")
+              }
+
+          ProfileScreen(currentScreen: $currentScreen)
+              .tabItem {
+                  Label("Profile", systemImage: "person.crop.circle")
+              }
+
+          AboutScreen()
+              .tabItem {
+                  Label("About", systemImage: "info.circle")
+              }
+      }
+  }
 }
 
 #Preview {
-    ContentView()
+    ContentView(currentScreen: .constant(.home))
 }
