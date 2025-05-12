@@ -2,7 +2,7 @@
 //  SubjectsScreen.swift
 //  subjectReviewApp
 //
-//  Created by Rayan El Taher on 10/5/2025.
+//  Created by Rayan El Taher & Ilias Vasiliou on 10/5/2025.
 //
 
 import SwiftUI
@@ -17,9 +17,11 @@ struct SubjectsScreen: View {
     NavigationStack {
       List {
         ForEach(userSubjects) { subject in
-          SubjectTile(subject: subject)
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
+          NavigationLink(destination: SubjectDetailScreen(subject: subject)) {
+            SubjectTile(subject: subject)
+          }
+          .listRowSeparator(.hidden)
+          .listRowBackground(Color.clear)
         }
         .onDelete(perform: deleteSubject)
       }
@@ -47,13 +49,37 @@ struct SubjectsScreen: View {
     Firestore.firestore().collection("users").document(uid).collection("subjects")
       .order(by: "addedAt")
       .getDocuments { snapshot, _ in
-        userSubjects = snapshot?.documents.map {
-          Subject(
-            id: $0.documentID,
-            subjectCode: $0["subjectCode"] as? String ?? "",
-            subjectName: $0["subjectName"] as? String ?? ""
-          )
-        } ?? []
+        let docs = snapshot?.documents ?? []
+        var tempSubjects: [Subject] = []
+        let group = DispatchGroup()
+
+        for doc in docs {
+          let subjectCode = doc["subjectCode"] as? String ?? ""
+          let subjectName = doc["subjectName"] as? String ?? ""
+          let subjectId = doc.documentID
+
+          group.enter()
+          Firestore.firestore().collection("subjects").document(subjectCode).collection("reviews")
+            .getDocuments { reviewSnapshot, _ in
+              let reviews = reviewSnapshot?.documents ?? []
+              let ratings = reviews.compactMap { $0["rating"] as? Int }
+              let avg = ratings.isEmpty ? nil : Double(ratings.reduce(0, +)) / Double(ratings.count)
+
+              let s = Subject(
+                id: subjectId,
+                subjectCode: subjectCode,
+                subjectName: subjectName,
+                averageRating: avg,
+                reviewCount: ratings.count
+              )
+              tempSubjects.append(s)
+              group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+          self.userSubjects = tempSubjects.sorted { $0.subjectCode < $1.subjectCode }
+        }
       }
   }
 

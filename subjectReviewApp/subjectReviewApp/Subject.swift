@@ -9,4 +9,6 @@ struct Subject: Identifiable {
     var id: String
     var subjectCode: String
     var subjectName: String
+    var averageRating: Double? = nil
+    var reviewCount: Int? = nil
 }
