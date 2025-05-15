@@ -93,6 +93,17 @@ struct SubjectDetailScreen: View {
                 .background(Color.purple)
                 .foregroundColor(.white)
                 .cornerRadius(10)
+
+                NavigationLink(destination: DownloadOutlineScreen(subjectCode: subject.subjectCode)) {
+                    Text("Download Outline")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 8)
             }
             .padding()
         }
